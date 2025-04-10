@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Изпрати болничен</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-4">
+    <h4>Здравей, {{ name }}!</h4>
+    <a href="/change_password" class="btn btn-warning btn-sm">Смени парола</a>
+    {% if session['username'] == 'admin' %}
+        <a href="/admin" class="btn btn-info btn-sm">Админ панел</a>
+    {% endif %}
+    <hr>
+    <form method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label>От дата:</label>
+            <input type="date" name="from_date" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>До дата:</label>
+            <input type="date" name="to_date" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Брой дни:</label>
+            <input type="number" name="days" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Забележка:</label>
+            <textarea name="note" class="form-control"></textarea>
+        </div>
+        <div class="mb-3">
+            <label>Прикачи файл:</label>
+            <input type="file" name="file" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success">Изпрати</button>
+    </form>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-info mt-3">{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
+</div>
+</body>
+</html>

@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 app = Flask(__name__)
-app.permanent_session_lifetime = timedelta(minutes=10)
 app.secret_key = 'secret_key'
 mail = Mail(app)
 
@@ -26,13 +25,13 @@ def get_db():
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
+        personal_number = request.form['personal_number']
         password = request.form['password']
         db = get_db()
-        user = db.execute("SELECT * FROM users WHERE email = ?", (personal_number,)).fetchone()
+        user = db.execute("SELECT * FROM users WHERE personal_number = ?", (personal_number,)).fetchone()
         if user and check_password_hash(user['password_hash'], password):
             session['user_id'] = user['id']
-            session['username'] = user['email']
+            session['username'] = user['personal_number']
             session['name'] = user['name']
             return redirect('/home')
         flash("Грешен персонален номер или парола")
@@ -99,10 +98,3 @@ def admin():
     users = db.execute("SELECT * FROM users WHERE personal_number != 'admin'").fetchall()
     current_hr_email = db.execute("SELECT hr_email FROM settings WHERE id = 1").fetchone()['hr_email']
     return render_template("admin.html", users=users, current_hr_email=current_hr_email)
-
-
-@app.route('/logout')
-def logout():
-    session.clear()
-    flash("Излязохте от системата.")
-    return redirect('/')
